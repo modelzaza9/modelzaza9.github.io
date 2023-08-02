@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>14369420 Digits of Pi</title>
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: Times New Roman, sans-serif;
+            line-height: 1.5;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #ffffff;
+        }
+        pre {
+            white-space: pre-wrap;
+            overflow-y: scroll;
+            height: 800px;
+            font-family: "Times New Roman", Times, serif;
+        }
+        span.digit {
+            display: inline-block;
+            width: 10px;
+        }
+        span.digit-1 { color: #FF0000; }
+        span.digit-2 { color: #FF9000; }
+        span.digit-3 { color: #FDFF02; }
+        span.digit-4 { color: #13FF00; }
+        span.digit-5 { color: #40BF00; }
+        span.digit-6 { color: #00FEFF; }
+        span.digit-7 { color: #0051FF; }
+        span.digit-8 { color: #8D00FF; }
+        span.digit-9 { color: #3EFFB7; }
+        span.digit-0 { color: #FF56F7; }
+        .load-more {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .load-more button {
+            padding: 20px 40px; /* Larger padding for bigger button */
+            font-size: 24px; /* Larger font size for bigger button */
+            background-color: #ffffff;
+            color: #000000;
+            border: none;
+            cursor: pointer;
+        }
+        /* Larger number input */
+        #page-input {
+            font-size: 24px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>14369420 Digits of Pi</h1>
+    <h2>By Jeerapat Saisuwan and team</h2>
+    <pre id="pi-digits"></pre>
+    <div class="load-more">
+        <form id="page-form">
+            <label for="page-input">Go to page:</label>
+            <input type="number" id="page-input" min="1" max="29" value="1">
+            <button type="submit">Go</button>
+        </form>
+    </div>
+    <div id="page-info"></div>
+    <a href="https://github.com/modelzaza9/modelzaza9.github.io/raw/main/digit%20only%2014369420%20digit.txt" download>potato device? click here</a>
+    <script>
+        const digitsPerPage = 500000;
+        let piDigits = ''; // Will store the fetched Pi digits
+
+        function renderDigits(startIndex, endIndex) {
+            const preElement = document.getElementById('pi-digits');
+            let digitsHTML = '';
+            for (let i = startIndex; i < endIndex; i++) {
+                if (i >= piDigits.length) {
+                    break;
+                }
+                const digit = piDigits[i];
+                const digitClass = `digit-${digit}`;
+                digitsHTML += `<span class="digit ${digitClass}">${digit}</span>`;
+            }
+            preElement.innerHTML = digitsHTML;
+
+            const pageInfoElement = document.getElementById('page-info');
+            pageInfoElement.textContent = `Displaying digits ${startIndex + 1} to ${endIndex} of ${piDigits.length}`;
+        }
+
+        function handlePageSubmit(event) {
+            event.preventDefault();
+            const pageInput = document.getElementById('page-input');
+            const pageNumber = parseInt(pageInput.value, 10);
+            if (pageNumber >= 1 && pageNumber <= 29) {
+                const startIndex = (pageNumber - 1) * digitsPerPage;
+                const endIndex = Math.min(startIndex + digitsPerPage, piDigits.length);
+                renderDigits(startIndex, endIndex);
+            }
+        }
+
+        const pageForm = document.getElementById('page-form');
+        pageForm.addEventListener('submit', handlePageSubmit);
+
+        // Fetch the Pi digits from the file hosted on GitHub
+        fetch('https://raw.githubusercontent.com/modelzaza9/modelzaza9.github.io/main/digit%20only%2014369420%20digit.txt')
+            .then(response => response.text())
+            .then(data => {
+                piDigits = data;
+                renderDigits(0, digitsPerPage); // Load the first page on page load
+            })
+            .catch(error => console.error('Error fetching Pi digits:', error));
+    </script>
+</body>
+</html>
