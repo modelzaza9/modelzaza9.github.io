@@ -50,12 +50,17 @@
             font-size: 24px;
             padding: 10px;
         }
+        /* Larger font for potato and pdf links */
+        .link {
+            font-size: 24px;
+        }
     </style>
 </head>
 <body>
     <h1>14369420 Digits of Pi</h1>
     <h2>By Jeerapat Saisuwan and team</h2>
     <pre id="pi-digits"></pre>
+    <div id="page-info"></div>
     <div class="load-more">
         <form id="page-form">
             <label for="page-input">Go to page:</label>
@@ -63,8 +68,9 @@
             <button type="submit">Go</button>
         </form>
     </div>
-    <div id="page-info"></div>
-    <a href="https://github.com/modelzaza9/modelzaza9.github.io/raw/main/digit%20only%2014369420%20digit.txt" download>potato device? click here</a>
+    <a class="link" href="https://github.com/modelzaza9/modelzaza9.github.io/raw/main/digit%20only%2014369420%20digit.txt" download>potato device? click here</a>
+    <br>
+    <a class="link" href="example.pdf" download>this is the product of this project</a>
     <script>
         const digitsPerPage = 500000;
         let piDigits = ''; // Will store the fetched Pi digits
