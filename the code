@@ -1,0 +1,97 @@
+import multiprocessing
+import mpmath
+import time
+
+# Set the desired precision (number of digits)
+mpmath.mp.dps = 14369421  # precision: 14,369,421 digits
+
+def calculate_n_minus_one(n):
+    start_time = time.time()
+    result = n - 1
+    end_time = time.time()
+    print(f"calculate_n_minus_one_done (Time: {end_time - start_time} seconds)")
+    return result
+
+def calculate_2_power_n_minus_one(n_minus_one):
+    start_time = time.time()
+    result = mpmath.power(2, n_minus_one)
+    end_time = time.time()
+    print(f"calculate_2_power_n_minus_one_done (Time: {end_time - start_time} seconds)")
+    return result
+
+def calculate_angle(n_minus_one):
+    start_time = time.time()
+    result = mpmath.power(2, -n_minus_one)
+    end_time = time.time()
+    print(f"calculate_angle_done (Time: {end_time - start_time} seconds)")
+    return result
+
+def calculate_exponential1(angle):
+    start_time = time.time()
+    result = mpmath.power(mpmath.j, angle)
+    end_time = time.time()
+    print(f"calculate_exponential1_done (Time: {end_time - start_time} seconds)")
+    return result
+
+def calculate_exponential2(angle):
+    start_time = time.time()
+    result = mpmath.power(mpmath.j, -angle)
+    end_time = time.time()
+    print(f"calculate_exponential2_done (Time: {end_time - start_time} seconds)")
+    return result
+
+def sine_calculation(exponentials):
+    start_time = time.time()
+    exp1, exp2 = exponentials
+    result = (exp1 - exp2) / mpmath.j
+    real_part = mpmath.re(result)
+    end_time = time.time()
+    print(f"sine_calculation_done (Time: {end_time - start_time} seconds)")
+    return real_part
+
+def multiply_result(real_part, two_power_n_minus_one):
+    start_time = time.time()
+    result = real_part * two_power_n_minus_one
+    end_time = time.time()
+    print(f"multiply_result_done (Time: {end_time - start_time} seconds)")
+    return result
+
+if __name__ == '__main__':
+    # Number of processes
+    num_processes = multiprocessing.cpu_count()
+
+    # Start timing
+    start_time = time.time()
+
+    # Target precision setup
+    mpmath.mp.dps = 14369421 
+    n = 23949046  # Example exponent value (you may adjust it)
+
+    # Create a multiprocessing pool
+    pool = multiprocessing.Pool(processes=num_processes)
+
+    # Step-by-step calculations
+    n_minus_one = pool.apply(calculate_n_minus_one, args=(n,))
+    two_power_n_minus_one = pool.apply(calculate_2_power_n_minus_one, args=(n_minus_one,))
+    angle = calculate_angle(n_minus_one)
+
+    # Calculate only one exponential
+    exp1_async = pool.apply_async(calculate_exponential1, args=(angle,))
+    exp1 = exp1_async.get()
+    exp2 = mpmath.conj(exp1)
+
+    # Compute sine and final result
+    real_part = pool.apply(sine_calculation, args=((exp1, exp2),))
+    modified_result = pool.apply(multiply_result, args=(real_part, two_power_n_minus_one))
+
+    # End timing
+    end_time = time.time()
+    print("Execution time:", end_time - start_time, "seconds")
+
+    # Save result to file
+    with open("result.txt", "w") as file:
+        file.write(f"Modified Result: {modified_result}\n")
+        file.write(f"Execution time: {end_time - start_time} seconds\n")
+
+    pool.close()
+    pool.join()
