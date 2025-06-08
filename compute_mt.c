@@ -52,7 +52,7 @@ int main() {
     scanf("%d", &digits);
 
     // === Step 2: Compute m from digits using custom formula ===
-    int k = (int)(log10(digits * 0.3)) + 2;
+    int k = (int)(log10(digits * 3.2)) + 1;
     int n = digits + k;
     int m = (5 * n + 1 + 2) / 3;  // ceiling((5n+1)/3)
 
